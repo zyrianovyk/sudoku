@@ -23,12 +23,12 @@ function parseArg(){
         echo "неправильное количество аргументов\n";
         echo "используйте строку запуска: ./sudoku.php <data>\n";        
         echo "например: ./sudoku.php 75...9..4.1...89....6.4...184.2.7...............4.1.284...9.6....51...3.1..8...45\n";                
-        return 1;        
+        return false;        
     }
     $cmdStr = $argv[1];
     if (strlen($cmdStr) != SIZE_MATRIX*SIZE_MATRIX){
         echo "неправильное количество данных (требуется строка из ".SIZE_MATRIX*SIZE_MATRIX." символа)\n";
-        return 1;
+        return false;
     }
     $strCmd = $argv[1];
     $x=0;
@@ -40,14 +40,14 @@ function parseArg(){
         }else{
             if ($cmdStr[$i] < '0' || $cmdStr[$i] > '9'){
                 echo "некорректные данные в ячейке: [".($x+1)."][".($y+1)."]\n";
-                return 1;                
+                return false;                
             }
             $a[$x][$y] = $cmdStr[$i] - '0';
         }
         $i++;
         nextXY($x, $y, $x, $y);
     }
-    return 0;
+    return true;
 }
 
 
@@ -192,7 +192,7 @@ function sudoku($x, $y) {
         return true;
     }
     if ($a[$x][$y] == CELL_EMPTY){
-        for ($v=0; $v < 9; $v++){
+        for ($v=1; $v <= 9; $v++){
             if (checkCell($x, $y, $v)){
                 $a[$x][$y] = $v;
                 nextXY($x, $y, $newX, $newY);
@@ -210,7 +210,7 @@ function sudoku($x, $y) {
     }
 }
 
-if (parseArg() == 0){
+if (parseArg()){
     //printMatrix();
     if (checkInputData()){
         if (sudoku(0, 0)){
